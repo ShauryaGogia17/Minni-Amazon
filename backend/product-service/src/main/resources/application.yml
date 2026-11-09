@@ -1,0 +1,54 @@
+server:
+  port: ${PRODUCT_PORT:8081}
+  error:
+    include-message: never
+    include-stacktrace: never
+spring:
+  application:
+    name: product-service
+  datasource:
+    url: ${PRODUCT_DB_URL:jdbc:postgresql://localhost:5432/shopai_product}
+    username: ${PRODUCT_DB_USER:shopai_product}
+    password: ${PRODUCT_DB_PASSWORD}
+    hikari:
+      maximum-pool-size: 10
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate:
+        jdbc.time_zone: UTC
+  flyway:
+    locations: classpath:db/migration
+  data:
+    redis:
+      host: ${REDIS_HOST:localhost}
+      port: ${REDIS_PORT:6379}
+      password: ${REDIS_PASSWORD}
+      connect-timeout: 1s
+      timeout: 1s
+      repositories:
+        enabled: false
+  cache:
+    type: redis
+  autoconfigure:
+    exclude: org.springframework.boot.autoconfigure.security.servlet.UserDetailsServiceAutoConfiguration
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health
+  endpoint:
+    health:
+      show-details: never
+      probes:
+        enabled: true
+      group:
+        readiness:
+          include: readinessState,db,redis
+shopai:
+  cors-origins: ${CORS_ORIGINS:http://localhost:5173}
+logging:
+  pattern:
+    level: '%5p [requestId=%X{requestId:-}]'

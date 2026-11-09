@@ -1,0 +1,4 @@
+# Explicit opt-in: demonstration catalog is never loaded by the default profile.
+spring:
+  flyway:
+    locations: classpath:db/migration,classpath:db/dev
